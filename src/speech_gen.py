@@ -3,9 +3,9 @@ import os
 import cv2
 import json
 import torch
+import subprocess
 import whisperx
 from os import path
-from f5_tts.api import F5TTS
 
 
 def transcribe_with_whisperx(audio_path, lang="en", device="cuda" if torch.cuda.is_available() else "cpu"):
@@ -19,8 +19,29 @@ def transcribe_with_whisperx(audio_path, lang="en", device="cuda" if torch.cuda.
     return text
 
 def inference_f5(text_prompt, save_path, ref_audio, ref_text):
+    from f5_tts.api import F5TTS
     f5tts = F5TTS()
     wav, sr, spec = f5tts.infer(ref_file=ref_audio, ref_text=ref_text, gen_text=text_prompt, file_wave=save_path, seed=None,)
+
+def inference_moss(text_prompt, save_path, ref_audio, moss_python, device="cuda"):
+    """Voice clone via MOSS-TTS (8B Delay) as a subprocess in its own Python env.
+
+    Invokes `tts_moss_wrapper.py` (sibling of this file) using the supplied
+    Python interpreter from the MOSS env. The wrapper handles model loading
+    via transformers' AutoModel/AutoProcessor with trust_remote_code=True.
+    """
+    wrapper = path.join(path.dirname(path.abspath(__file__)), "tts_moss_wrapper.py")
+    out_dir = path.dirname(save_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    cmd = [
+        moss_python, wrapper,
+        "--ref-audio", ref_audio,
+        "--text", text_prompt,
+        "--output-audio", save_path,
+        "--device", device,
+    ]
+    subprocess.run(cmd, check=True)
 
 def parse_script(script_text):
     pages = script_text.strip().split("###\n")
@@ -37,12 +58,13 @@ def parse_script(script_text):
         result.append(page_data)
     return result
 
-def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=None):
+def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=None,
+                  moss_python=None):
     with open(script_path, 'r') as f: script_with_cursor = ''.join(f.readlines())
     parsed_speech = parse_script(script_with_cursor)
-    
+
     os.makedirs(speech_save_dir, exist_ok=True)
-    
+
     for slide_idx in range(len(parsed_speech)):
         speech_with_cursor = parsed_speech[slide_idx]
         subtitle = ""
@@ -50,5 +72,13 @@ def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=
             if len(subtitle) == 0: subtitle = prompt
             else: subtitle = subtitle + "\n\n\n" + prompt
         speech_result_path = path.join(speech_save_dir, "{}.wav".format(str(slide_idx)))
-        if ref_text is None: ref_text = transcribe_with_whisperx(ref_audio)
-        if model_type == "f5": inference_f5(subtitle, speech_result_path, ref_audio, ref_text)
+
+        if model_type == "f5":
+            if ref_text is None: ref_text = transcribe_with_whisperx(ref_audio)
+            inference_f5(subtitle, speech_result_path, ref_audio, ref_text)
+        elif model_type == "moss":
+            if not moss_python:
+                raise ValueError("moss model requires --moss_env")
+            inference_moss(subtitle, speech_result_path, ref_audio, moss_python)
+        else:
+            raise ValueError(f"unknown tts model_type: {model_type}")

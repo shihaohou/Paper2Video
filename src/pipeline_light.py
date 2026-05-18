@@ -51,8 +51,11 @@ if __name__ == '__main__':
     parser.add_argument('--gpu_list', type=str2list, default="")
     parser.add_argument('--if_tree_search', type=bool, default=True)
     parser.add_argument('--beamer_templete_prompt', type=str, default=None)
-    parser.add_argument('--stage', type=str, default="[\"0\"]") 
-    parser.add_argument('--talking_head_env', type=str, default="") 
+    parser.add_argument('--stage', type=str, default="[\"0\"]")
+    parser.add_argument('--talking_head_env', type=str, default="")
+    parser.add_argument('--tts_model_type', type=str, default='f5', choices=['f5', 'moss'])
+    parser.add_argument('--moss_env', type=str, default=None,
+                        help='Path to MOSS-TTS venv python interpreter (used when --tts_model_type moss)')
     # slide+subtitle: 1; 
     # tts+cusor: 2; 
     # talking-head: 3: 
@@ -123,8 +126,9 @@ if __name__ == '__main__':
 
     
         ## Step 3-1: Speech Generation
-        tts_per_slide(model_type='f5', script_path=subtitle_cursor_save_path, 
-                    speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text)  
+        tts_per_slide(model_type=args.tts_model_type, script_path=subtitle_cursor_save_path,
+                    speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text,
+                    moss_python=args.moss_env)
         step3_1_time =  time.time()
         time_second["tts"] = [step3_1_time-step2_time]
         print("Speech Generation", step3_1_time-step2_time)
