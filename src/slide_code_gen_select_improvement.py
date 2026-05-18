@@ -43,7 +43,7 @@ def latex_code_gen_upgrade(prompt_path, tex_dir, beamer_save_path,
         model_type=model_config_ll["model_type"],
         model_config_dict=model_config_ll.get("model_config"),
         url=model_config_ll.get("url", None),)
-    agent = ChatAgent(model=model, system_message="",)
+    agent = ChatAgent(model=model, system_message="You are a helpful assistant.",)
     with open(prompt_path, 'r', encoding='utf-8') as f_prompt: templete_prompt = f_prompt.read()
     token_usage = {}
     ## paper latex code input
@@ -137,7 +137,7 @@ def improve_layout(code, feedback, beamer_save_path, model_config):
         model_type=model_config["model_type"],
         model_config_dict=model_config.get("model_config"),
         url=model_config.get("url", None),)
-    imporve_agent = ChatAgent(model=imporve_model, system_message="",)
+    imporve_agent = ChatAgent(model=imporve_model, system_message="You are a helpful assistant.",)
     proposal_tmp_dir = path.join(path.dirname(beamer_save_path), 'proposal_imgs')
     os.makedirs(proposal_tmp_dir, exist_ok=True)
     factors = [1, 0.75, 0.5, 0.25]
@@ -200,7 +200,7 @@ def improve_per_slide(data):
         model_type=model_config["model_type"],
         model_config_dict=model_config.get("model_config"),
         url=model_config.get("url", None),)
-    imporve_agent = ChatAgent(model=imporve_model, system_message="",)
+    imporve_agent = ChatAgent(model=imporve_model, system_message="You are a helpful assistant.",)
     factors = [1, 0.75, 0.5, 0.25]
     map_dic = {"A": 0, "B": 1, "C": 2, "D": 3}
     proposal_tmp_dir = path.join(path.dirname(beamer_save_path), 'proposal_imgs_'+str(idx))

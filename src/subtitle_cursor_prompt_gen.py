@@ -17,7 +17,7 @@ def subtitle_cursor_gen(slide_imgs_dir, prompt_path, model_config):
         model_type=model_config["model_type"],
         model_config_dict=model_config.get("model_config"),
         url=model_config.get("url", None),)
-    agent = ChatAgent(model=model, system_message="",)
+    agent = ChatAgent(model=model, system_message="You are a helpful assistant.",)
     
     with open(prompt_path, 'r', encoding='utf-8') as f_prompt: task_prompt = f_prompt.read()
     slide_image_list = [path.join(slide_imgs_dir, name) for name in os.listdir(slide_imgs_dir)]
