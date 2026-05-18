@@ -8,11 +8,29 @@ file self-contained so it works under a different Python.
 """
 import argparse
 import os
+import tempfile
 
 import numpy as np
 import soundfile as sf
 import torch
 from transformers import AutoModel, AutoProcessor
+
+
+def normalize_ref_audio(ref_audio_path):
+    """Re-encode the reference audio to a canonical 16-bit PCM mono wav.
+
+    MOSS-TTS's processor reads reference audio via torchaudio's torchcodec
+    backend, which is strict about container/codec quirks (32-bit float wav,
+    extended fmt chunks, etc.) and throws "Invalid data found". soundfile
+    is more lenient, so we load with it and rewrite a clean PCM_16 wav.
+    """
+    wav, sr = sf.read(ref_audio_path, always_2d=False)
+    if wav.ndim > 1:
+        wav = wav.mean(axis=1)
+    tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    tmp.close()
+    sf.write(tmp.name, wav.astype(np.float32), sr, subtype="PCM_16")
+    return tmp.name
 
 
 def main():
@@ -46,7 +64,8 @@ def main():
 
     sample_rate = int(getattr(processor.model_config, "sampling_rate", 24000))
 
-    conversations = [[processor.build_user_message(text=args.text, reference=[args.ref_audio])]]
+    ref_audio_path = os.path.abspath(normalize_ref_audio(args.ref_audio))
+    conversations = [[processor.build_user_message(text=args.text, reference=[ref_audio_path])]]
     batch = processor(conversations, mode="generation")
     input_ids = batch["input_ids"].to(device)
     attention_mask = batch["attention_mask"].to(device)
