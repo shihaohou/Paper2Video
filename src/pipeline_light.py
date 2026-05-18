@@ -45,7 +45,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_name_t', type=str, default='gpt-4.1') 
     parser.add_argument('--model_name_v', type=str, default='gpt-4.1') 
     parser.add_argument('--paper_latex_root', type=str, default='./assets/demo/latex_proj')
-    parser.add_argument('--ref_img', type=str, default='./assets/demo/zeyu.png')
+    parser.add_argument('--ref_img', type=str, default=None)
     parser.add_argument('--ref_audio', type=str, default='./assets/demo/zeyu.wav')
     parser.add_argument('--ref_text', type=str, default=None)
     parser.add_argument('--gpu_list', type=str2list, default="")
@@ -150,9 +150,10 @@ if __name__ == '__main__':
         image_size = cv2.imread(path.join(slide_image_dir, '1.png')).shape
         size = max(image_size[0]//6, image_size[1]//6)
         num_slide = len(os.listdir(slide_image_dir))
-        print(args.ref_img.split("/")[-1].split(".")[0])
+        ref_img_name = (path.basename(args.ref_img).rsplit(".", 1)[0]
+                        if args.ref_img else "")
         merage_cmd =  ["./1_merage_light.bash", slide_image_dir, speech_save_dir, tmp_merage_dir,
-                       str(num_slide), tmp_merage_1, args.ref_img.split("/")[-1].replace(".png", "")]
+                       str(num_slide), tmp_merage_1, ref_img_name]
         out = subprocess.run(merage_cmd, text=True)
         # render cursor
         cursor_size = size//6
