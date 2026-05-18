@@ -4,6 +4,7 @@
 
 import re
 import fitz
+import time
 import yaml
 import json
 import bisect
@@ -576,12 +577,26 @@ def correcte_error(beamer_code, error_info, agent):
     code = extract_beamer_code(response.msgs[-1].content)
     return code, response.info['usage']
 
-def safe_step(agent, user_msg, max_retries=5):
+def safe_step(agent, user_msg, max_retries=8):
+    last_exc = None
     for attempt in range(max_retries):
-        response = agent.step(user_msg)
-        if getattr(response, "msgs", None) and len(response.msgs) > 0:
-            return response
-        print(f"[Retry {attempt+1}/{max_retries}] Empty or invalid response, retrying...")
+        try:
+            response = agent.step(user_msg)
+            if getattr(response, "msgs", None) and len(response.msgs) > 0:
+                return response
+            print(f"[Retry {attempt+1}/{max_retries}] Empty or invalid response, retrying...")
+            time.sleep(min(2 ** attempt, 30))
+        except Exception as e:
+            last_exc = e
+            backoff = min(2 ** attempt, 30)
+            print(f"[Retry {attempt+1}/{max_retries}] {type(e).__name__}: {e}; "
+                  f"sleeping {backoff}s before retry")
+            time.sleep(backoff)
+    if last_exc is not None:
+        raise RuntimeError(
+            f"Agent failed after {max_retries} retries (last error: "
+            f"{type(last_exc).__name__}: {last_exc})"
+        ) from last_exc
     raise RuntimeError(f"Agent failed after {max_retries} retries: {user_msg}")
 
 # def find_all_tex_files(root_dir):
