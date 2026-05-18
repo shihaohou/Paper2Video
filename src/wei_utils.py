@@ -179,10 +179,14 @@ def get_agent_config(model_type):
             'model_config': OpenRouterConfig().as_dict(),
         }
     else:
+        import os
         agent_config = {
             'model_type': model_type,
             'model_platform': ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
-            'model_config': None
+            'model_config': ChatGPTConfig().as_dict(),
+            'url': os.environ.get("OPENAI_COMPATIBILITY_API_BASE_URL")
+                   or os.environ.get("OPENAI_API_BASE_URL"),
+            'max_images': 99,
         }
-    
+
     return agent_config
