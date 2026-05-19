@@ -1,4 +1,4 @@
-"""One-off patches to the generated slides_refined.tex for the FedPuReL deck.
+r"""One-off patches to the generated slides_refined.tex for the FedPuReL deck.
 
 - Replace frame 1 (title) with the short-affiliation version.
 - Replace frame 15 (conclusion) with a tighter, "take-home"-style closer.
@@ -83,7 +83,7 @@ PREAMBLE_INJECTIONS = [
 
 
 def ensure_preamble(tex: str) -> str:
-    """Inject \usepackage{hyperref} and \setbeamertemplate{navigation symbols}{}
+    r"""Inject \usepackage{hyperref} and \setbeamertemplate{navigation symbols}{}
     just before \begin{document} if they're not already there.
     """
     doc_idx = tex.find(r"\begin{document}")
