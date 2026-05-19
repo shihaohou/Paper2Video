@@ -3,7 +3,7 @@ numpy==1.26.0
 torch==2.7.0
 moviepy==1.0.3
 f5_tts==1.1.6
-whisper==1.1.10
+openai-whisper
 asyncio==3.4.3
 Pillow==10.3.0
 playwright==1.51.0
