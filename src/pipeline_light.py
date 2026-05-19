@@ -15,7 +15,27 @@ import os, sys
 import argparse
 import subprocess
 from os import path
-from pdf2image import convert_from_path
+import fitz
+
+
+def pdf_to_pngs(pdf_path, out_dir, dpi=400):
+    """Render PDF pages to numbered PNGs via PyMuPDF.
+
+    Replaces pdf2image/poppler, which silently strips complex TikZ
+    vector content (gradients, hatching, transparency clouds) embedded
+    in figures — symptom: parts of the slide come out blank/white.
+    """
+    doc = fitz.open(pdf_path)
+    zoom = dpi / 72.0
+    matrix = fitz.Matrix(zoom, zoom)
+    paths = []
+    for i, page in enumerate(doc):
+        pix = page.get_pixmap(matrix=matrix, alpha=False)
+        out_path = path.join(out_dir, "{}.png".format(i + 1))
+        pix.save(out_path)
+        paths.append(out_path)
+    doc.close()
+    return paths
 
 
 from speech_gen import tts_per_slide
@@ -106,8 +126,7 @@ if __name__ == '__main__':
             paper_latex_path = path.join(args.paper_latex_root, "main.tex") 
             usage_slide = latex_code_gen(prompt_path=prompt_path, tex_dir=args.paper_latex_root, tex_path=paper_latex_path, beamer_save_path=slide_latex_path, model_config=agent_config_t)
             
-        slide_imgs = convert_from_path(beamer_path, dpi=400)
-        for i, img in enumerate(slide_imgs): img.save(path.join(slide_image_dir, f"{i+1}.png")) # save slides as images
+        pdf_to_pngs(beamer_path, slide_image_dir, dpi=400)  # save slides as images
         if args.model_name_t not in token_usage.keys(): 
             token_usage[args.model_name_t] = [usage_slide]
         else: token_usage[args.model_name_t].append(usage_slide)
