@@ -2,18 +2,18 @@ STRICT SLIDE OUTLINE — generate EXACTLY one \begin{frame}...\end{frame} per it
 
 Slide 1 — Title slide.
   - Top row: logos in two columns.
-    * Left column (0.65\textwidth): fig/logo1.png at height=0.9cm, left-aligned (XMU + UCL + GDUT combined).
-    * Right column (0.33\textwidth): fig/cvpr_logo.png at height=0.9cm, right-aligned (CVPR Denver 2026).
-    * Keep logos small — do NOT exceed height=0.9cm.
-  - Title (centered, \Large — not \LARGE): "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
-  - Force a \par between title and authors (NOT just \vspace, otherwise text flows into one paragraph).
-  - Authors (\small, centered, with explicit \\ line break after 5th author so they wrap evenly across 2 lines):
-      Shihao Hou\textsuperscript{1}, Chikai Shang\textsuperscript{1}, Zhiheng Yang\textsuperscript{1}, Jiacheng Yang\textsuperscript{3}, Xinyi Shang\textsuperscript{2}, \\
-      Junlong Gao\textsuperscript{1}, Yiqun Zhang\textsuperscript{4}, Yang Lu\textsuperscript{1,*}
+    * Left column (0.55\textwidth): fig/logo1.png at height=0.9cm, left-aligned (XMU + UCL + GDUT combined).
+    * Right column (0.43\textwidth): fig/cvpr_logo.png at height=1.3cm, right-aligned (CVPR Denver 2026 — make this one bigger than the school logos).
+  - Title (centered, \Large): "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
+  - Force a \par between title and authors (NOT just \vspace).
+  - Authors (\small, centered, with explicit \\ line break after the 5th author so they wrap evenly across 2 lines). Superscripts match the paper EXACTLY — only 3 affiliations exist:
+      Shihao Hou\textsuperscript{1}, Chikai Shang\textsuperscript{1}, Zhiheng Yang\textsuperscript{1}, Jiacheng Yang\textsuperscript{1}, Xinyi Shang\textsuperscript{2}, \\
+      Junlong Gao\textsuperscript{1}, Yiqun Zhang\textsuperscript{3}, Yang Lu\textsuperscript{1,*}
   - Force a \par before affiliations.
-  - Affiliations (\footnotesize, centered, with explicit \\ to put 2 per line):
-      \textsuperscript{1}Xiamen University \quad \textsuperscript{2}Xiamen University (School of Informatics) \\
-      \textsuperscript{3}University College London \quad \textsuperscript{4}Guangdong University of Technology
+  - Affiliations (\footnotesize, centered, ONE PER LINE — there are exactly 3, do not invent a 4th):
+      \textsuperscript{1}Key Laboratory of Multimedia Trusted Perception and Efficient Computing, Ministry of Education of China, Xiamen University, Xiamen, China \\
+      \textsuperscript{2}Department of Statistical Science, University College London, London, United Kingdom \\
+      \textsuperscript{3}School of Computer Science and Technology, Guangdong University of Technology, Guangzhou, China
   - Force a \par before corresponding-author note.
   - Bottom line (\scriptsize): "\textsuperscript{*}Corresponding author"
 
