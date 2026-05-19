@@ -32,6 +32,22 @@ def inference_f5(text_prompt, save_path, ref_audio, ref_text):
     f5tts = F5TTS()
     wav, sr, spec = f5tts.infer(ref_file=ref_audio, ref_text=ref_text, gen_text=text_prompt, file_wave=save_path, seed=None,)
 
+def speedup_audio(path, speed):
+    """In-place ffmpeg atempo speed change without pitch shift.
+
+    atempo supports 0.5-2.0; we expect speed in [0.8, 1.5] for natural talk.
+    """
+    if abs(speed - 1.0) < 0.01:
+        return
+    tmp = path + ".tmp.wav"
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", path, "-filter:a", "atempo={}".format(speed),
+         "-loglevel", "error", tmp],
+        check=True,
+    )
+    os.replace(tmp, path)
+
+
 def inference_moss(text_prompt, save_path, ref_audio, moss_python, device="cuda"):
     """Voice clone via MOSS-TTS (8B Delay) as a subprocess in its own Python env.
 
@@ -68,7 +84,7 @@ def parse_script(script_text):
     return result
 
 def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=None,
-                  moss_python=None):
+                  moss_python=None, speed=1.0):
     with open(script_path, 'r') as f: script_with_cursor = ''.join(f.readlines())
     parsed_speech = parse_script(script_with_cursor)
 
@@ -91,3 +107,5 @@ def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=
             inference_moss(subtitle, speech_result_path, ref_audio, moss_python)
         else:
             raise ValueError(f"unknown tts model_type: {model_type}")
+
+        speedup_audio(speech_result_path, speed)

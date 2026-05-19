@@ -76,6 +76,8 @@ if __name__ == '__main__':
     parser.add_argument('--tts_model_type', type=str, default='f5', choices=['f5', 'moss'])
     parser.add_argument('--moss_env', type=str, default=None,
                         help='Path to MOSS-TTS venv python interpreter (used when --tts_model_type moss)')
+    parser.add_argument('--tts_speed', type=float, default=1.0,
+                        help='Post-TTS atempo speed factor (0.8-1.5). 1.0 = no change, 1.2 ~ moderate speed-up')
     parser.add_argument('--slide_outline_file', type=str, default=None,
                         help='Path to a plain text file describing the exact slide-by-slide outline. '
                              'When set, LLM is told to ignore the default chapter structure and follow this outline.')
@@ -155,7 +157,7 @@ if __name__ == '__main__':
         ## Step 3-1: Speech Generation
         tts_per_slide(model_type=args.tts_model_type, script_path=subtitle_cursor_save_path,
                     speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text,
-                    moss_python=args.moss_env)
+                    moss_python=args.moss_env, speed=args.tts_speed)
         step3_1_time =  time.time()
         time_second["tts"] = [step3_1_time-step2_time]
         print("Speech Generation", step3_1_time-step2_time)
