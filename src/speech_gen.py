@@ -4,6 +4,15 @@ import cv2
 import json
 import torch
 import subprocess
+
+if not getattr(torch.load, "_p2v_patched", False):
+    _p2v_orig_torch_load = torch.load
+    def _p2v_torch_load(*args, **kwargs):
+        kwargs.setdefault("weights_only", False)
+        return _p2v_orig_torch_load(*args, **kwargs)
+    _p2v_torch_load._p2v_patched = True
+    torch.load = _p2v_torch_load
+
 import whisperx
 from os import path
 
