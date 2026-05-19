@@ -8,7 +8,7 @@ import subprocess
 if not getattr(torch.load, "_p2v_patched", False):
     _p2v_orig_torch_load = torch.load
     def _p2v_torch_load(*args, **kwargs):
-        kwargs.setdefault("weights_only", False)
+        kwargs["weights_only"] = False  ## force override; some callers (lightning_fabric) pass True explicitly
         return _p2v_orig_torch_load(*args, **kwargs)
     _p2v_torch_load._p2v_patched = True
     torch.load = _p2v_torch_load
