@@ -1,0 +1,50 @@
+
+
+
+
+
+
+
+
+
+
+
+\begin{abstract}
+
+% Long-tailed distributions are common in real-world recognition tasks, where a few head classes have many samples while most tail classes have very few. We observe that fine-tuning foundation models on such data leads to a structural distortion of pre-trained representations. Many samples that are correctly recognized by zero-shot CLIP become misclassified after fine-tuning, especially for tail classes. This distortion mainly comes from two types of confusion: fine-grained confusion and co-occurrence confusion. In essence, this confusion arises from the limitation of single-label supervision enforces models to make isolated and sparse predictions, disrupting the inter-class knowledge learned during pre-training.
+% To address this issue, we propose \textbf{CUE},  \underline{C}onfusion-aware m\underline{U}lti-label \underline{E}nhancement), a simple framework that replaces single-label supervision with multi-label enhancement from pre-trained priors of both vision--language and large language models. CUE introduces a VLM-based prior from zero-shot CLIP to capture visual confusability and an LLM-based prior to model semantic relations. These priors are integrated through a unified Binary Logit-Adjusted (BLA) loss that preserves inter-class structure and reduces head-class bias. Experiments on CIFAR100-LT, ImageNet-LT, Places-LT, and iNaturalist2018 show that CUE achieves balanced and strong performance, surpassing recent state-of-the-art methods. \textit{Code is available at:} \url{XXXXXXXXXXXXXXXXXXXXXXXX}
+
+% Fine-tuning for long-tailed learning has sparked significant interest since the emergence of foundation models.
+% Existing methods mainly focus on exploring various long-tailed training strategies for fine-tuning, e.g., loss re-weighting, but most of them overlook
+% In this paper, we
+
+% Fine-tuning for long-tailed learning has sparked significant interest driven by the rich pre-trained knowledge within foundation models. Most existing methods center on designing long-tailed fine-tuning strategies to exploit such knowledge without introducing head-class bias. Nevertheless, our work reveals that fine-tuning on long-tailed data exhibits a new form of bias: many samples that were correctly classified by zero-shot CLIP become misclassified after fine-tuning, especially for tail classes. Moreover, we find that this misclassification mainly comes from two types of inter-class confusion: fine-grained confusion and co-occurrence confusion. In essence, this confusion arises from the limitation of single-label supervision, which enforces models to make isolated and sparse predictions, thereby disrupting the inter-class knowledge learned during pre-training.
+% To address this, we propose Confusion-aware mUlti-label Enhancement (CUE), which leverages the pre-trained priors of both vision-language models (VLMs) and large language models (LLMs) to construct multi-label supervision. Specifically, CUE uses VLMs to build multiple pseudo labels for each instances and LLMs for pseudo labels for each classes. These pseudo labels are used for multi-label supervision, thereby 
+
+
+% Fine-tuning for long-tailed learning has sparked significant interest due to the rich priors in foundation models. Most existing approaches focus on designing long-tailed fine-tuning strategies to exploit these priors while avoiding the head-class bias introduced by class imbalance. However, we observe a new form of bias introduced by fine-tuning: many samples that were correctly classified by zero-shot CLIP become misclassified after fine-tuning, especially for tail classes. These errors mainly stem from confusion among semantically similar classes, e.g., tail-class images of willow tree are easily misclassified as oak tree. We attribute this issue to single-label supervision, which enforces models to make isolated and sparse predictions, thereby disrupting the inter-class knowledge learned from pre-training. To address this, we propose Confusion-aware mUlti-label Enhancement (CUE), which introduces multi-label supervision guided by the priors of foundation models to better preserve inter-class correlations. Specifically, CUE generates pseudo-labels at two levels: instance-level labels from VLMs and class-level labels from LLMs. These pseudo labels enable multi-label supervision that explicitly encodes inter-class priors, thereby maintaining the semantic relationships learned during pre-training. Experiments XXXXXX.
+
+% merge abstract
+
+
+
+
+% Nevertheless, our work observes that fine-tuning on long-tailed data inherently introduces a new form of bias: many samples that were correctly classified by zero-shot CLIP become misclassified after fine-tuning, especially for tail classes.
+
+% Fine-tuning for long-tailed learning has sparked significant interest since the emergence of foundation models. A prevailing approach is to develop various long-tailed training strategies for fine-tuning, aiming to leverage pre-trained knowledge while
+
+% Real-world classification tasks typically exhibit a long-tailed distribution over classes, which causes models to undesirably bias toward head classes. 
+% Recently, fine-tuning foundation models for 
+% Recent advances center on leveraging the strong priors of foundation models for such long-tailed data
+
+% Fine-tuning for long-tailed learning has sparked significant interest owing to the rich prior knowledge within foundation models. Most existing approaches focus on designing long-tailed fine-tuning strategies to mitigate head-class bias. However, we find a new type of bias in long-tailed fine-tuning, where many samples correctly recognized by zero-shot CLIP become misclassified, especially for tail classes. This phenomenon arises from confusion among semantically similar classes. In essence, we attribute this confusion to the limitation of single-label supervision. Such supervision enforces isolated predictions and disrupts inter-class knowledge. To address this, we propose \textbf{CUE},  \underline{C}onfusion-aware m\underline{U}lti-label \underline{E}nhancement, which leverages multi-label cues to preserve inter-class relationships disrupted by single-label supervision. Specifically, CUE derives multi-label cues from foundation models, where visual cues are obtained from zero-shot CLIP and semantic cues are provided by large language models, and integrates them through a unified Binary Logit-Adjusted (BLA) loss to provide confusion-aware multi-label enhancement. Experiments on CIFAR100-LT, ImageNet-LT, Places-LT, and iNaturalist2018 show that CUE achieves balanced and strong performance, surpassing recent state-of-the-art methods. \textit{Code is available at:} \url{XXXXXXXXXXXX}.
+
+\vspace{-1em}
+Long-tailed distributions are common in real-world recognition tasks, where a few head classes have many samples while most tail classes have very few. Recently, fine-tuning foundation models for long-tailed learning has gained attention due to their excellent performance. However, most existing methods focus solely on mitigating long-tailed distribution bias while overlooking concept confusion caused by the long-tailed distribution. In this paper, we study this problem and attribute it to the mutual exclusivity of single-label supervision under long-tailed distributions, which suppresses feature sharing among related classes and amplifies the dominance of head classes, leading to disrupted inter-class discriminability. To address this, we propose \textbf{CUE},  \underline{C}oncept-aware m\underline{U}lti-label \underline{E}xpansion, which introduces multi-label concept signals to preserve disrupted inter-class relationships. Specifically, CUE constructs concept sets by \textbf{(i)} extracting instance-level visual cues from zero-shot CLIP and \textbf{(ii)} generating class-level semantic cues with LLM; the two cues are incorporated via separately weighted Binary Logit-Adjustment (BLA) auxiliary losses and jointly optimized with the baseline Logit-Adjustment (LA) loss. Experiments on several long-tailed benchmarks, CUE achieves balanced and strong performance, surpassing recent state-of-the-art methods. 
+% The code is available in the supplementary materials.
+\textit{Code is available at:} \url{https://github.com/zhangruichi/CUE}.
+
+
+
+
+\end{abstract}

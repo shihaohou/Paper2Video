@@ -1,0 +1,133 @@
+% CVPR 2026 Paper Template; see https://github.com/cvpr-org/author-kit
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+\usepackage{cvpr}              % To produce the CAMERA-READY version
+% \usepackage[review]{cvpr}      % To produce the REVIEW version
+\usepackage{float}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fontawesome5}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage{xcolor}
+% \usepackage{subcaption}
+% \usepackage{caption}
+% \usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+
+% Import additional packages in the preamble file, before hyperref
+\input{preamble}
+
+% It is strongly recommended to use hyperref, especially for the review version.
+% hyperref with option pagebackref eases the reviewers' job.
+% Please disable hyperref *only* if you encounter grave issues, 
+% e.g. with the file validation for the camera-ready version.
+%
+% If you comment hyperref and then uncomment it, you should delete *.aux before re-running LaTeX.
+% (Or just hit 'q' on the first LaTeX run, let it finish, and you should be clear).
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\paperID{} % *** Enter the Paper ID here
+\def\confName{CVPR}
+\def\confYear{2026}
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{\textcolor{blue!50}{\faLightbulb}\ CUE: Concept-Aware Multi-Label Expansion to Mitigate Concept Confusion in Long-Tailed Learning}
+% \title{\textcolor{blue!50}{\faLightbulb}\ CUE: Concept-Level Multi-Label Expansion to Mitigate \\ Similar-Class Confusion in Long-Tailed Learning}
+
+%%%%%%%%% AUTHORS - PLEASE UPDATE
+\author{Ruichi Zhang$^{1}$\footnotemark[1]\hspace{20pt}Chikai Shang$^{1}$\footnotemark[1]\hspace{20pt}Jiacheng Yang$^{1}$\hspace{20pt}Mengke Li$^2$\\
+Yang Zhou$^3$\hspace{20pt}Junlong Gao$^{1}$\hspace{20pt}Yang Lu$^{1}$\footnotemark[2]\\
+{\small $^1$Key Laboratory of Multimedia Trusted Perception and Efficient Computing, Ministry of Education of China, Xiamen University, China}\\
+{\small $^2$College of Computer Science and Software Engineering, Shenzhen University, China}\\
+{\small $^3$Institute of High Performance Computing, A*STAR, Singapore}\\
+{\tt\small zhangruichi@stu.xmu.edu.cn\hspace{20pt}ckshang12@gmail.com\hspace{20pt}23020250157840@stu.xmu.edu.cn}\\
+{\tt\small mengkeli@szu.edu.cn\hspace{20pt}zhou\_yang@a-star.edu.sg\hspace{20pt}jlgao@xmu.edu.cn\hspace{20pt}luyang@xmu.edu.cn}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+}
+
+
+\begin{document}
+\twocolumn[{%
+\maketitle
+
+\vspace{-2em}
+\begin{center}
+    \centering
+    \begin{minipage}[b]{1.0\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/motivation_v3.pdf}
+        \vspace{-0.5em}
+      \captionof{figure}{\textbf{Motivation: Handling Concept Confusion, Not Just Class Imbalance.} (a) On CIFAR100-LT (IR=100), fine-tuning CLIP with LIFT~\cite{shi2024long} turns many zero-shot correct predictions into errors, especially on tail classes. (b) Most of these errors are misclassified into semantically related categories, a phenomenon we term as \textit{concept confusion}. This confusion mainly arises from the fine-tuning process, which disrupts inter-class relationships among semantically similar concepts, as evidenced by attention shifts revealed in Grad-CAM visualizations (c). These observations motivate exploring strategies to preserve inter-class relationships during fine-tuning.
+      }
+      % \captionof{figure}{}
+        \label{fig:motivation2}
+    \end{minipage}
+\end{center}
+% \vspace{-0.5em}
+% \begin{center}
+% % \begin{figure}
+%   \centering
+%   % \begin{subfigure}[b]{0.49\textwidth}
+%   \begin{minipage}[b]{0.49\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{img/motivation2-1-h.pdf}
+%     \vspace{-5mm}
+%     \captionof*{figure}{(a) The blue curve shows the number of classes, the red line shows the number of samples that are correct in zero-shot CLIP but misclassified after fine-tuning, and the dotted lines show the mean values for the head, middle, and tail classes.}
+%     \label{fig:motivation2-1}
+%   % \end{subfigure}
+%   \end{minipage}
+%   \hfill
+%   % 第二张子图
+%   % \begin{subfigure}[b]{0.49\textwidth}
+%   \begin{minipage}[b]{0.49\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{img/motivation2-2-h.pdf}
+%     \captionof*{figure}{(b) Visualization of Grad-CAM maps for model predictions (Pred) and ground truth labels (GT). Samples are selected from the peak regions in Fig.\ref{fig:motivation2}(a),  where ZS CLIP denotes the zero-shot results using the prompt ``a photo of a [CLASS] . '' .}
+%     \label{fig:motivation2-2}
+%   % \end{subfigure}
+%   \end{minipage}
+
+%   \captionof{figure}{Motivation: Fine-tuning foundation models on long-tailed data distorts pre-trained representations, turning many zero-shot–correct predictions into errors, particularly for tail classes as shown in Fig.\ref{fig:motivation2}(a). These errors mainly arise from two types of semantic confusion illustrated in Fig.\ref{fig:motivation2}(b): \textit{fine-grained confusion}, where visually similar categories are misclassified, and \textit{co-occurrence confusion}, where context or background biases dominate the prediction. This phenomenon highlights that conventional single-label fine-tuning undermines the rich inter-class knowledge learned during pre-training, motivating our confusion-aware learning framework.}
+%   \label{fig:motivation2}
+% % \end{figure}
+% \end{center}%
+}]
+
+
+
+% \maketitle
+
+
+\footnotetext[1]{Equal contribution.}
+\footnotetext[2]{Corresponding author: Yang Lu (luyang@xmu.edu.cn).}
+\footnotetext[3]{Accepted by CVPR 2026.}
+
+
+\input{sec/0_abstract}    
+\input{sec/1_intro}
+\input{sec/2_related}
+\input{sec/3_method}
+\input{sec/4_exp}
+\input{sec/5_conclusion}
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+
+% WARNING: do not forget to delete the supplementary pages from your submission 
+% \input{sec/X_suppl}
+
+\end{document}

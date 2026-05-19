@@ -1,0 +1,152 @@
+\vspace{-5mm}
+\section{Introduction}
+\label{sec:intro}
+
+% 原版
+% In real-world classification problems, data often exhibit a long-tailed label distribution, where a few ``head classes'' have abundant samples, while a large number of ``tail classes'' contain only a few training samples. This problem, known as long-tailed learning, aims to overcome this imbalance by improving recognition performance on tail categories without compromising accuracy on head classes. It has been extensively studied through data-level, representation-level, and model-level strategies, including re-sampling, re-weighting, decoupled training, and contrastive representation learning. These approaches have laid the foundation of long-tailed learning and achieved remarkable progress in mitigating long-tailed bias in classification.
+
+% v0
+% In real-world classification tasks, data naturally exhibits a long-tailed distribution over classes, where a few head classes dominate with abundant samples while most tail classes contain only a few samples~\cite{van2018inaturalist, zhang2023deep, zhang2025systematic}. This severe imbalance poses a fundamental challenge for standard learning approaches, which often struggle to generalize to tail classes and tend to be heavily biased toward head classes~\cite{menon2021longtail, li2022long}. To addre ss this, the field of long-tailed learning (LTL) has been extensively studied to mitigate this challenge and achieve more balanced performance~\cite{cao2019learning, kang2020decoupling, zhang2021distribution, hou2025learning}.
+
+% v1
+In real-world classification tasks, data often follow a long-tailed distribution, where a few head classes have abundant samples (e.g., frequent animals in image datasets or common diseases in medical datasets), while numerous tail classes have only limited examples (e.g., rare animal species or uncommon diseases)~\cite{zhang2023deep, zhang2025systematic, johnson2019mimic}. This imbalance is prevalent in applications including image recognition, medical diagnosis, and autonomous driving~\cite{van2018inaturalist, yasunobu2003auto, ao2020application}, often resulting in models that perform well in head classes but poorly in tail ones~\cite{menon2021longtail, li2022long}. To address this issue, the field of long-tailed learning (LTL) has emerged, aiming to develop methods that achieve balanced and promising performance across all classes~\cite{cao2019learning, kang2020decoupling, hou2025learning}.
+
+
+% In real-world classification tasks, data often exhibits a long-tailed label distribution, where a few head classes contain abundant samples while most tail classes contain only a few samples. Such imbalanced data is prevalent in various critical applications like medical diagnosis and autonomous driving. Consequently, this problem, known as long-tailed learning (LTL), has been extensively studied, with the goal of enhancing generalization on tail classes without compromising performance on head classes.
+% The challenges posed by such imbalanced data are prevalent in various applications, such as medical diagnosis and autonomous driving. This problem, known as long-tailed learning (LTL), has been widely studied, aiming to improve generalization on tail classes without compromising performance on head classes.
+
+
+
+% \begin{figure}[t]
+%   \centering
+%   \begin{subfigure}[b]{\linewidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{img/motivation2-1.pdf}
+%     \caption{The blue curve shows the number of classes, the red line shows the number of samples that are correct in zero shot CLIP but misclassified after fine tuning, and the dotted lines show the mean values for the head, middle, and tail classes.}
+%     \label{fig:motivation2-1}
+%   \end{subfigure}
+
+%   \vspace{0.5em} 
+%   \begin{subfigure}[b]{\linewidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{img/motivation2-2.pdf}
+%     \caption{From left to right the columns show the image, the Grad CAM of LIFT for the predicted label, the Grad CAM of LIFT for the ground truth label, the Grad CAM of zero shot CLIP, and the Grad CAM of our method.}
+%     \label{fig:motivation2-2}
+%   \end{subfigure}
+
+%   \caption{Motivation: Fine-tuning on long-tailed data turns many zero-shot–correct predictions into errors, especially for tail classes as shown in (a). These errors mainly stem from fine-grained confusion and co-occurrence confusion as shown in (b).}
+%   \label{fig:motivation}
+  
+% \end{figure}
+
+% \begin{figure*}[t]
+%   \centering
+%   \begin{subfigure}[b]{0.49\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{img/motivation2-1-h.pdf}
+%     \caption{The blue curve shows the number of classes, the red line shows the number of samples that are correct in zero shot CLIP but misclassified after fine-tuning, and the dotted lines show the mean values for the head, middle, and tail classes.}
+%     \label{fig:motivation2-1}
+%   \end{subfigure}
+%   \hfill
+%   % 第二张子图
+%   \begin{subfigure}[b]{0.49\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{img/motivation2-2-h.pdf}
+%     \caption{Visualization of Grad-CAM maps for model predictions (Pred) and ground truth labels (GT). Samples are selected from the peak regions in Fig.~\ref{fig:motivation2-1},  where ZS CLIP denotes the zero-shot results using the prompt ``a photo of a [CLASS] . '' .}
+%     \label{fig:motivation2-2}
+%   \end{subfigure}
+
+%   \caption{Motivation: Fine-tuning foundation models on long-tailed data distorts pre-trained representations, turning many zero-shot–correct predictions into errors, particularly for tail classes as shown in \ref{fig:motivation2-1}. These errors mainly arise from two types of semantic confusion illustrated in \ref{fig:motivation2-2}: \textit{fine-grained confusion}, where visually similar categories are misclassified, and \textit{co-occurrence confusion}, where context or background biases dominate the prediction. This phenomenon highlights that conventional single-label fine-tuning undermines the rich inter-class knowledge learned during pre-training, motivating our confusion-aware learning framework.}
+%   \label{fig:motivation2}
+% \end{figure*}
+
+
+
+
+
+% 原版
+% Recently, the emergence of foundation models such as CLIP has redefined the paradigm of long-tailed learning. Instead of training from scratch, many works leverage pre-trained vision-language models, such as BALLAD, VL-LTR, RAC, LPT, and LIFT. Each of these approaches is intuitive and has proven empirically successful, enabling downstream tasks to perform better even under long-tailed distributions.
+
+% v0
+% Recently, the emergence of foundation models such as CLIP has renewed the paradigm of LTL.
+% Recently, LTL has gained renewed interest with the emergence of foundation models such as CLIP~\cite{radford2021learning}. 
+% % Recently, foundation models have demonstrated highly effective at leveraging the rich pre-trained knowledge to 
+% Instead of training models from scratch, recent studies have increasingly focused on leveraging the extensive knowledge embedded in these large-scale pre-trained models. For instance, LIFT\cite{shi2024long} employs parameter-efficient fine-tuning to retain upstream knowledge and better support data-scarce tail classes, while LTGC\cite{zhao2024ltgc} exploits the implicit knowledge within large language models to generate additional data for tail classes. These foundation model-based approaches have proven remarkable effectiveness, enabling downstream tasks to achieve superior performance even under highly imbalanced data.
+
+% v1
+
+Recently, fine-tuning foundation models for long-tailed learning has gained considerable attention due to their strong generalization and excellent performance. Representative methods~\cite{ shi2024long, tian2022vl, long2022retrieval,li2024improving,xia2024lmpt} adapt foundation models through parameter-efficient fine-tuning such as prompt tuning~\cite{jia2022visual, dong2023lpt}, adapter tuning~\cite{jia2021scaling, steitz2024adapters}, or LoRA~\cite{hu2022lora}, and even by leveraging additional data to enhance tail performance. By transferring rich pre-trained knowledge, these models effectively enhance representation quality and improve recognition for tail classes, making them a promising paradigm for addressing long-tailed challenges.
+
+% Recently, leveraging the pre-trained knowledge in foundation models such as CLIP~\cite{radford2021learning} has proven highly effective in addressing long-tailed problems. For instance, BALLAD~\cite{ma2021simple} fine-tunes the entire model before adapting a lightweight linear head on re-sampled data, LPT~\cite{dong2023lpt} employs a two-phase prompt-tuning framework, LIFT~\cite{shi2024long} employs parameter-efficient fine-tuning to retain upstream knowledge. In addition, several studies further exploit foundation models together with leveraging extra sources of information to enhance tail performance: VL-LTR~\cite{tian2022vl} incorporates additional image–text web data during fine-tuning, and RAC~\cite{long2022retrieval} jointly fine-tunes an encoder while retrieving semantically related samples from large external datasets. Collectively, these approaches effectively use and expand the knowledge in foundation models through adaptation or knowledge integration, leading to more balanced and robust performance across head and tail classes.
+
+% Recently, foundation models (e.g., CLIP) have proven highly effective at leveraging the pre-trained knowledge to mitigate class imbalance.
+% Recently, foundation models (e.g., CLIP) have demonstrated remarkable effectiveness in tackling LTL by leveraging the rich pre-trained knowledge. For instance, BALLAD first proposes to fine-tune on foundation models with re-sampling strategies, aiming to exploit upstream knowledge while mitigating bias. LIFT further leverages lightweight fine-tuning to better preserves upstream knowledge to help the tail classes.
+% For instance, LPT first utilizes prompt tuning with bags of LTL strategies, aiming to exploit the upstream knowledge without incurring bias. LIFT further finds that heavy fine-tuning lightweight fine-tuning
+
+
+
+% 原版
+% However, they are not without limitations. Through comprehensive analysis, we observe a counterintuitive phenomenon: some samples correctly recognized by zero-shot CLIP become misclassified after fine-tuning. This indicates that the fine-tuning process can distort the intrinsic inter-class relationships established during pre-training, particularly among semantically or visually similar categories. As illustrated in Fig.~1, these errors are concentrated in the tail region and are mainly attributed to two types of confusion: (1) \textit{\textbf{co-occurrence interference}}, where contextual correlations such as man–mountain bias the classifier, and (2) \textit{\textbf{fine-grained similarity}}, where closely related categories like \texttt{willow\_tree} and \texttt{oak\_tree} overlap in feature space. The figure also presents the zero-shot top-$k$ predictions and LLM-generated related classes, revealing that fine-tuning often amplifies confusion among correlated categories rather than alleviating it.
+
+
+% v0
+% However, through comprehensive analysis, we observe an interesting phenomenon: some samples correctly recognized by zero-shot CLIP become misclassified after fine-tuning, even though we adopt a logit adjustment strategy designed for long-tailed distributions. As illustrated in Fig.\ref{fig:motivation}, samples that are correctly classified by zero-shot CLIP but become misclassified after fine-tuning are concentrated in the tail region. By visualizing these samples, we observe that such misclassifications occur mainly in two cases: (1) \textit{\textbf{co-occurrence interference}}, where contextual correlations such as man–mountain bias the classifier, and (2) \textit{\textbf{fine-grained similarity}}, where closely related categories like \texttt{willow tree} and \texttt{oak tree} overlap in feature space. More importantly, due to the long-tailed distribution of the data, these confusions are often dominated by head classes, making tail categories more prone to being misclassified into related head ones.
+
+% v1
+% However, fine-tuning foundation models on long-tailed data introduces new forms of bias, even when applying the balanced LA loss~\cite{menon2021longtail}. 
+% As shown in Fig.~\ref{fig:motivation2}(a), 
+% many samples correctly classified by zero-shot CLIP become misclassified after fine-tuning, particularly for tail classes. 
+% many samples, which have correctly classified by zero-shot CLIP, become misclassified after fine-tuning, particularly for tail classes.
+% many samples that were correctly classified by zero-shot CLIP become misclassified after fine-tuning, especially for tail classes. We observe that these errors are often assigned to semantically related categories rather than to head classes as shown in Fig.~\ref{fig:motivation2}(b). 
+% This phenomenon suggests that the adaptation process alters the representation learned during pre-training, weakening the model’s ability to maintain relationships between classes. 
+% This phenomenon suggests that the adaptation process undermines the representation learned during pre-training.
+% This phenomenon reveals that \textit{confusion, rather than imbalance bias, is the key bottleneck in adapting foundation models to long-tailed distributions}.  As further illustrated by the Grad-CAM results in Fig.~\ref{fig:motivation2}(c), fine-tuning tends to shift the model’s attention toward incorrect regions, leading to visually plausible yet semantically wrong predictions for tail classes. While the zero-shot CLIP exhibits relatively more object-centric localization, its attention is still imperfect and sometimes diffuse, reflecting the lack of adaptation to domain-specific data. Overall, these observations suggest that fine-tuning amplifies semantic confusion rather than mitigating it, mainly because semantically similar categories are easily mixed up in long-tailed settings. This distorts the feature space learned during pre-training and shows that relying only on distribution priors is insufficient to fully address this issue.
+
+
+
+% v2
+However, most existing methods focus solely on mitigating the bias from well-studied class imbalance while overlooking that from \textit{concept confusion} that arises during fine-tuning. As shown in Fig.~\ref{fig:motivation2}(a), many samples correctly classified by zero-shot CLIP become misclassified after fine-tuning, particularly for tail classes. These errors are frequently assigned to semantically related categories, as illustrated in Fig.~\ref{fig:motivation2}(b). Grad-CAM visualizations in Fig.~\ref{fig:motivation2}(c) further show that fine-tuning shifts the model’s attention from object-centric regions to incorrect areas, resulting in semantically inconsistent predictions for tail classes. Although the zero-shot CLIP is less adapted to the target domain, it still maintains relatively coherent attention, indicating that this confusion primarily emerges during fine-tuning. These observations indicate that in addition to class imbalance, \textit{concept confusion} has become a key challenge in adapting foundation models to long-tailed distributions. 
+
+
+
+% This phenomenon indicates that fine-tuning may undermine the representation learned during pre-training. To investigate this effect more concretely, we examine representative cases located at the peak regions of Fig.~\ref{fig:motivation2-1}, and visualize them using Grad-CAM as shown in Fig.~\ref{fig:motivation2-2}. 
+
+
+% We observe that most misclassifications can be attributed to two major sources: (1) \textit{\textbf{fine-grained confusion}}, where closely related categories like \texttt{willow tree} and \texttt{oak tree} overlap in feature space, the corresponding Grad-CAM maps show that the fine-tuned model fails to attend to the discriminative object regions, with attention scattered across similar textures,  and (2) \textit{\textbf{co-occurrence confusion}}, where contextual correlations such as man–mountain bias the classifier, Grad-CAM reveals that the model’s focus shifts toward background areas, leading to predictions dominated by context rather than the target object.
+% This phenomenon indicates that fine-tuning may undermine the representation learned during pre-training. To investigate this effect more concretely, we visualize the representative cases in Fig.~\ref{fig:motivation2-1}, and visualize them using Grad-CAM as shown in Fig.~\ref{fig:motivation2-2}. We  observe that most misclassifications can be attributed to two major sources: (1) \textit{\textbf{fine-grained confusion}}, where closely related categories like \texttt{willow tree} and \texttt{oak tree} overlap in feature space, the corresponding Grad-CAM maps show that the fine-tuned model fails to attend to the discriminative object regions, with attention scattered across similar textures,  and (2) \textit{\textbf{co-occurrence confusion}}, where contextual correlations such as man–mountain bias the classifier, Grad-CAM reveals that the model’s focus shifts toward background areas, leading to predictions dominated by context rather than the target object.
+% Grad-CAM visualizations further confirm these observations: the fine-tuned model often attends to irrelevant contextual regions rather than the main object,
+
+
+% v0
+% Motivated by this observation, we are inspired by the inherent capabilities of vision–language models (VLMs) and large language models (LLMs): VLMs naturally capture visual co-occurrence and fine-grained similarity, while LLMs excel at modeling high-level semantic and conceptual relationships. Thus, we propose \textbf{Confusion-aware Multi-Label Supervision (CUE)}, a novel framework designed to explicitly model confusable relationships in long-tailed learning. CUE introduces a dual-level prior mechanism to provide soft supervision across semantically related categories, where the \textbf{sample-level prior} is \textbf{visual-driven}, derived from CLIP’s zero-shot top-$k$ predictions to capture visually confusable categories through vision-language modeling (VLM), while the \textbf{class-level prior} is \textbf{language-driven}, generated by large language models (LLMs) to explore semantic and conceptual relationships among categories. This combination of visual and linguistic cues enables CUE to maintain the original decision boundaries while improving robustness against semantic confusion.
+
+
+
+% We hypothesize that this confusion largely arises from the limitations of single-label supervision, which provides sparse and exclusive guidance and thus disrupts the rich inter-class relationships established during pre-training. 
+% We argue that this confusion largely arises from the limitations of single-label supervision, 
+% which provides only singular (sparse) guidance and disrupts the rich inter-class relationships established during pre-training.
+% We argue that \textit{this confusion largely arises from the limitations of single-label supervision, which enforces models to make singular sparse class predictions, thereby disrupting the rich inter-class knowledge acquired during pre-training}.
+
+% v1
+% In this paper, we aim to address the confusion observed during the fine-tuning of foundation models on long-tailed data, thereby achieving more balanced performance across all classes. Such confusion mainly stem from the use of single-label supervision with cross-entropy loss, which tends to optimize one target class while suppressing all others, thereby encouraging mutually exclusive decision boundaries and potentially weakening the inter-class correlations acquired during pre-training. 
+% v2 
+In this paper, we attribute this concept confusion to the mutual exclusivity inherent in single-label supervision, which enforces each instance to belong to only one class even when categories are semantically or visually related. Under long-tailed distributions, this exclusivity encourages the model to favor classes with more abundant and representative samples in pursuit of better training objectives, causing these head classes to dominate the learning process and disrupt the correlation among related categories. Consequently, inter-class relationships are disrupted, which further amplifies concept confusion.
+
+
+
+To alleviate this issue, we propose CUE (\underline{C}oncept-aware m\underline{U}lti-label \underline{E}xpansion), which encourages the model to actively seek informative cues.  CUE introduces the strengths of vision–language models (VLMs) and large language models (LLMs) as guidance to generate multiple semantically related class labels, enabling the model to explicitly learn inter-class relationships rather than collapsing them into single-label decisions. Specifically, VLMs provide instance-level cues, capturing fine-grained visual and contextual relationships through large-scale image–text pre-training~\cite{radford2021learning,jia2021scaling}, while LLMs offer class-level cues, modeling higher-level semantic and conceptual associations among categories~\cite{brown2020language,bommasani2021opportunities}. By integrating these cues, CUE effectively preserves the inter-class structure learned during pre-training and guides the model to make more balanced predictions across all classes, while also producing more accurate and object-centric attention, as illustrated in Fig.~\ref{fig:motivation2}(c). Our contributions are threefold:
+\vspace{0.5em}
+\begin{itemize}
+    \item We identify and analyze \textit{concept confusion}, that arises during fine-tuning of foundation models on long-tailed data, and reveal its underlying cause rooted in the mutual exclusivity of single-label supervision.
+    \item We propose \textbf{CUE}, which integrates VLMs and LLMs to generate semantically related labels and explicitly model inter-class relationships, with a plug-and-play design that flexibly supports both fine-tuning and from-scratch.
+    \item We demonstrate that \textbf{CUE} effectively mitigates concept confusion and achieves consistent gains on multiple long-tailed benchmarks.  
+\end{itemize}
+
+% \item 
+% We develop a scalable confusable-class generation pipeline that constructs high-quality semantic similarity sets through batched generation and filtering.
+% We develop a confusable-class generation pipeline that constructs high-quality semantic similarity sets through batched generation and filtering.
+% v2 
+
+
+
+    
