@@ -106,7 +106,7 @@ Slide 15 — Conclusion.
 
 Slide 16 — Thank-you slide.
   - No frame title bar (use \begin{frame} with NO title argument).
-  - \vspace{1.6cm}, then centered \fontsize{60}{72}\selectfont \textbf{Thank you!}
+  - \vspace{2.2cm}, then centered \Huge \textbf{Thank you!} (use standard \Huge, NOT a custom 60pt size — keep it modest).
   - Do NOT include "Questions?" — the user explicitly does not want it.
   - \vspace{1.4cm}, then centered \footnotesize tabular with code link + contact emails (no \texttt):
       \begin{tabular}{rl}
