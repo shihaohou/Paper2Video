@@ -1,19 +1,21 @@
 STRICT SLIDE OUTLINE — generate EXACTLY one \begin{frame}...\end{frame} per item below, in this exact order, with these exact titles. Do NOT add extra slides. Do NOT skip any. Use the listed figures from the paper's fig/ directory where specified.
 
 Slide 1 — Title slide.
-  - Top row: logos.
-    * Left side: include fig/logo1.png at height=1.4cm (combined XMU + UCL + GDUT institutional logos).
-    * Right side: include fig/cvpr_logo.png at height=1.4cm (CVPR Denver 2026 conference logo).
-    * Use a two-column layout for the top row so the left logo strip is left-aligned and the CVPR logo is right-aligned.
-  - Title (centered, \Large or \LARGE): "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
-  - Authors with affiliation superscripts on one line, centered:
-      Shihao Hou\textsuperscript{1}, Chikai Shang\textsuperscript{1}, Zhiheng Yang\textsuperscript{1}, Jiacheng Yang\textsuperscript{3}, Xinyi Shang\textsuperscript{2}, Junlong Gao\textsuperscript{1}, Yiqun Zhang\textsuperscript{4}, Yang Lu\textsuperscript{1,*}
-  - Affiliations (footnotesize, centered):
-      \textsuperscript{1}Xiamen University \quad
-      \textsuperscript{2}Xiamen University (School of Informatics) \quad
-      \textsuperscript{3}University College London \quad
-      \textsuperscript{4}Guangdong University of Technology
-  - One small line at the bottom: "\textsuperscript{*}Corresponding author"
+  - Top row: logos in two columns.
+    * Left column (0.65\textwidth): fig/logo1.png at height=0.9cm, left-aligned (XMU + UCL + GDUT combined).
+    * Right column (0.33\textwidth): fig/cvpr_logo.png at height=0.9cm, right-aligned (CVPR Denver 2026).
+    * Keep logos small — do NOT exceed height=0.9cm.
+  - Title (centered, \Large — not \LARGE): "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
+  - Force a \par between title and authors (NOT just \vspace, otherwise text flows into one paragraph).
+  - Authors (\small, centered, with explicit \\ line break after 5th author so they wrap evenly across 2 lines):
+      Shihao Hou\textsuperscript{1}, Chikai Shang\textsuperscript{1}, Zhiheng Yang\textsuperscript{1}, Jiacheng Yang\textsuperscript{3}, Xinyi Shang\textsuperscript{2}, \\
+      Junlong Gao\textsuperscript{1}, Yiqun Zhang\textsuperscript{4}, Yang Lu\textsuperscript{1,*}
+  - Force a \par before affiliations.
+  - Affiliations (\footnotesize, centered, with explicit \\ to put 2 per line):
+      \textsuperscript{1}Xiamen University \quad \textsuperscript{2}Xiamen University (School of Informatics) \\
+      \textsuperscript{3}University College London \quad \textsuperscript{4}Guangdong University of Technology
+  - Force a \par before corresponding-author note.
+  - Bottom line (\scriptsize): "\textsuperscript{*}Corresponding author"
 
 Slide 2 — Motivation: The Problem.
   - One bullet: PEFT fine-tuning of foundation models (e.g., CLIP) in federated long-tailed (Fed-LT) settings erodes their inherent balanced knowledge.
