@@ -144,30 +144,43 @@ if __name__ == '__main__':
     speech_save_dir = path.join(args.result_dir, 'audio')
     if "2" in stage or  "0" in stage:
         prompt_path = "prompts/slide_subtitle_cursor_prompt.txt"
-        subtitle, usage_subtitle = subtitle_cursor_gen(slide_image_dir, prompt_path, agent_config_v)
-        with open(subtitle_cursor_save_path, 'w') as f: f.write(subtitle)
-        if args.model_name_v not in token_usage.keys(): 
-            token_usage[args.model_name_v] = [usage_subtitle]
-        else: token_usage[args.model_name_v].append(usage_subtitle)
+        if path.exists(subtitle_cursor_save_path):
+            print("[skip] subtitle_w_cursor.txt exists, reusing")
+        else:
+            subtitle, usage_subtitle = subtitle_cursor_gen(slide_image_dir, prompt_path, agent_config_v)
+            with open(subtitle_cursor_save_path, 'w') as f: f.write(subtitle)
+            if args.model_name_v not in token_usage.keys():
+                token_usage[args.model_name_v] = [usage_subtitle]
+            else: token_usage[args.model_name_v].append(usage_subtitle)
         step2_time =  time.time()
         time_second["subtitle_cursor_prompt_gen"] = [step2_time-start_time]
         print("Subtitle and Cursor Prompt Generation", step2_time-start_time)
 
-    
+
         ## Step 3-1: Speech Generation
-        tts_per_slide(model_type=args.tts_model_type, script_path=subtitle_cursor_save_path,
-                    speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text,
-                    moss_python=args.moss_env, speed=args.tts_speed)
+        existing_wavs = (
+            [f for f in os.listdir(speech_save_dir) if f.endswith('.wav')]
+            if path.exists(speech_save_dir) else []
+        )
+        if existing_wavs:
+            print("[skip] {} wav files exist in {}, reusing".format(len(existing_wavs), speech_save_dir))
+        else:
+            tts_per_slide(model_type=args.tts_model_type, script_path=subtitle_cursor_save_path,
+                        speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text,
+                        moss_python=args.moss_env, speed=args.tts_speed)
         step3_1_time =  time.time()
         time_second["tts"] = [step3_1_time-step2_time]
         print("Speech Generation", step3_1_time-step2_time)
-        
-        
+
+
         ## Step 3-2: Cursor Generation
-        os.environ["PYTHONHASHSEED"] = "random"        
-        cursor_token = cursor_gen_per_sentence(script_path=subtitle_cursor_save_path, slide_img_dir=slide_image_dir, 
-                                slide_audio_dir=speech_save_dir, cursor_save_path=cursor_save_path, gpu_list=args.gpu_list)
-        token_usage["cursor"] = cursor_token
+        if path.exists(cursor_save_path):
+            print("[skip] cursor.json exists, reusing")
+        else:
+            os.environ["PYTHONHASHSEED"] = "random"
+            cursor_token = cursor_gen_per_sentence(script_path=subtitle_cursor_save_path, slide_img_dir=slide_image_dir,
+                                    slide_audio_dir=speech_save_dir, cursor_save_path=cursor_save_path, gpu_list=args.gpu_list)
+            token_usage["cursor"] = cursor_token
         step3_2_time =  time.time()
         time_second["cursor_gen"] = [step3_2_time-step3_1_time]
         print("Cursor Generation", step3_2_time-step3_1_time)
