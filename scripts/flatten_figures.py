@@ -18,6 +18,7 @@ import argparse
 from pathlib import Path
 
 import fitz
+from PIL import Image
 
 
 def flatten(pdf_path: Path, dpi: int = 400) -> None:
@@ -27,11 +28,12 @@ def flatten(pdf_path: Path, dpi: int = 400) -> None:
     pix = page.get_pixmap(matrix=fitz.Matrix(dpi / 72.0, dpi / 72.0), alpha=False)
     src.close()
 
-    dst = fitz.open()
-    new_page = dst.new_page(width=rect.width, height=rect.height)
-    new_page.insert_image(rect, pixmap=pix)
-    dst.save(str(pdf_path), deflate=True)
-    dst.close()
+    # Render to a PIL image, then let PIL write a minimal image-only PDF.
+    # PyMuPDF's own .save() produces PDF 1.7 streams that xdvipdfmx can't
+    # decompress ("tectonic_flate_decompress() failed"). PIL's PDF backend
+    # writes simpler PDFs that tectonic handles without complaint.
+    img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+    img.save(str(pdf_path), "PDF", resolution=float(dpi))
     print(f"flattened {pdf_path.name} ({rect.width:.0f}x{rect.height:.0f} pt @ {dpi} dpi)")
 
 
