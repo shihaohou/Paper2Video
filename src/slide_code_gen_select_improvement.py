@@ -111,7 +111,12 @@ def improve_layout(code, feedback, beamer_save_path, model_config):
     warning_info = [s for s in warning_info if 'Overfull' in s]
     
     ## find out which slide needed to be improved
-    head = re.search(r'\\documentclass(?:\[[^\]]*\])?\{beamer\}(.*?)\\begin{document}', code, flags=re.DOTALL).group(1)
+    docclass_match = re.search(
+        r'(\\documentclass(?:\[[^\]]*\])?\{beamer\})(.*?)\\begin{document}',
+        code, flags=re.DOTALL,
+    )
+    documentclass_line = docclass_match.group(1)  ## preserve aspect ratio / options
+    head = docclass_match.group(2)
     head = head + "\n" + "\\setbeamerfont{caption}{size=\\scriptsize}" ## smaller the caption front size
     frames = compute_frame_spans(code)
     need_improve_list = []
@@ -150,12 +155,12 @@ def improve_layout(code, feedback, beamer_save_path, model_config):
         for factor in factors:
             proposal_code = scale_includegraphics_widths(frame["text"], factor)
             proposal_code = add_small_after_blocks(proposal_code)
-            proposal_full_code =  '\n'.join(["\\documentclass{beamer}", head, "\\begin{document}", proposal_code, "\\end{document}"])
+            proposal_full_code =  '\n'.join([documentclass_line, head, "\\begin{document}", proposal_code, "\\end{document}"])
             proposal_code_save_path = beamer_save_path.replace('.tex', 'proposal_{}.tex'.format(str(factor)))
             with open(proposal_code_save_path, 'w') as f: f.write(proposal_full_code)
-            feedback = compile_tex(proposal_code_save_path)  
+            feedback = compile_tex(proposal_code_save_path)
             img_path = pdf2img(proposal_code_save_path.replace(".tex", ".pdf"), proposal_tmp_dir)
-            proposal_imgs_path_list.append(img_path)  
+            proposal_imgs_path_list.append(img_path)
             proposal_code_list.append(proposal_code)
         prompt_img_path =  path.join(proposal_tmp_dir, "meraged.png")
         make_grid_with_labels(proposal_imgs_path_list, prompt_img_path, rows=2, cols=2)
@@ -174,7 +179,7 @@ def improve_layout(code, feedback, beamer_save_path, model_config):
         refined_code = proposal_code_list[map_dic[choice["choice"]]]
         frames[frame_idx]["text"] = refined_code
     ## update code
-    new_code = ["\\documentclass{beamer}", head, "\\begin{document}"]
+    new_code = [documentclass_line, head, "\\begin{document}"]
     section = []
     subsection = []
     for frame in frames: 

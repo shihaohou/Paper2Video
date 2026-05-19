@@ -2,14 +2,14 @@ Please generate a complete English PPT introduction based on the given TeX sourc
 The specific requirements are as follows.
 
 Content structure
-The PPT must contain the following chapters (arranged in order), and each chapter must have a clear title and content:
+The PPT must contain the following chapters (arranged in order), and each chapter must have a clear title and content. Do NOT include "Related work" — skip it entirely.
 ·Open slide (title, author, instructions​​)
-·Motivation (research background and problem statement and how differentiation from existing work)
-·Related work (current status and challenges in the field)
+·Motivation (research background and problem statement and how it differs from existing work — DO NOT make this a related-work survey)
 ·Method (core technical framework) [The content of the method needs to be introduced in detail, and each part of the method should be introduced on a separate page]
 ·Experimental method (experimental design and process)
 ·Experimental setting (dataset, parameters, environment, etc.)
 ·Experimental results (main experimental results and comparative analysis)
+·Analysis (detailed empirical analyses) [If the paper contains N distinct analyses (e.g. an "Analysis" or "Discussion" section with several named subsections, ablations on different components, sensitivity studies, motivation analyses), give EACH ONE its own dedicated slide. Do not merge them. Title each slide after its specific analysis (e.g. "Analysis 1: Gradient Drift", "Analysis 2: Client Imbalance"). Aim for one slide per analysis subsection found in the paper.]
 ·Ablation experiment (validation of the role of key modules)
 ·Deficiencies (limitations of current methods)
 ·Future research (improvement direction or potential application)
@@ -37,8 +37,8 @@ Format requirements
 ·Table content should first extract real data from the source document.
 ·All content should be in English.
 ·If the source text is long, it is allowed to summarize the content, but the core methods, experimental data and conclusions must be retained.
-·Perfer more images than heavy text. **The number of slides should be around 10.** 
-·Must begin as \documentclass{beamer} and end as \end{document}.
+·Perfer more images than heavy text. **The total number of slides depends on how many distinct Analysis subsections the paper has — typically 12-15 slides total when the paper has 3-5 analyses to detail.**
+·Must begin as \documentclass[aspectratio=169]{beamer} (16:9 widescreen) and end as \end{document}.
 **Don't use "\usepackage{resizebox}" in the code which is not right in grammer.**
 **& in title is not allowed which will cause error "Misplaced alignment tab character &"**
 **Pay attention to this "error: !File ended while scanning use of \frame"**
