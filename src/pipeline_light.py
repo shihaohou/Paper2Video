@@ -157,17 +157,10 @@ if __name__ == '__main__':
         print("Subtitle and Cursor Prompt Generation", step2_time-start_time)
 
 
-        ## Step 3-1: Speech Generation
-        existing_wavs = (
-            [f for f in os.listdir(speech_save_dir) if f.endswith('.wav')]
-            if path.exists(speech_save_dir) else []
-        )
-        if existing_wavs:
-            print("[skip] {} wav files exist in {}, reusing".format(len(existing_wavs), speech_save_dir))
-        else:
-            tts_per_slide(model_type=args.tts_model_type, script_path=subtitle_cursor_save_path,
-                        speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text,
-                        moss_python=args.moss_env, speed=args.tts_speed)
+        ## Step 3-1: Speech Generation (per-slide skip-if-exists handled inside)
+        tts_per_slide(model_type=args.tts_model_type, script_path=subtitle_cursor_save_path,
+                    speech_save_dir=speech_save_dir, ref_audio=args.ref_audio, ref_text=args.ref_text,
+                    moss_python=args.moss_env, speed=args.tts_speed, gpu_list=args.gpu_list)
         step3_1_time =  time.time()
         time_second["tts"] = [step3_1_time-step2_time]
         print("Speech Generation", step3_1_time-step2_time)

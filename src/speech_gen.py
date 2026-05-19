@@ -48,12 +48,13 @@ def speedup_audio(path, speed):
     os.replace(tmp, path)
 
 
-def inference_moss(text_prompt, save_path, ref_audio, moss_python, device="cuda"):
+def inference_moss(text_prompt, save_path, ref_audio, moss_python, device="cuda", gpu_id=None):
     """Voice clone via MOSS-TTS (8B Delay) as a subprocess in its own Python env.
 
     Invokes `tts_moss_wrapper.py` (sibling of this file) using the supplied
-    Python interpreter from the MOSS env. The wrapper handles model loading
-    via transformers' AutoModel/AutoProcessor with trust_remote_code=True.
+    Python interpreter from the MOSS env. If `gpu_id` is given, restrict the
+    subprocess to that physical GPU via CUDA_VISIBLE_DEVICES — otherwise it
+    defaults to physical GPU 0, which may collide with other workloads.
     """
     wrapper = path.join(path.dirname(path.abspath(__file__)), "tts_moss_wrapper.py")
     out_dir = path.dirname(save_path)
@@ -66,7 +67,10 @@ def inference_moss(text_prompt, save_path, ref_audio, moss_python, device="cuda"
         "--output-audio", save_path,
         "--device", device,
     ]
-    subprocess.run(cmd, check=True)
+    env = os.environ.copy()
+    if gpu_id is not None:
+        env["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    subprocess.run(cmd, check=True, env=env)
 
 def parse_script(script_text):
     pages = script_text.strip().split("###\n")
@@ -84,11 +88,12 @@ def parse_script(script_text):
     return result
 
 def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=None,
-                  moss_python=None, speed=1.0):
+                  moss_python=None, speed=1.0, gpu_list=None):
     with open(script_path, 'r') as f: script_with_cursor = ''.join(f.readlines())
     parsed_speech = parse_script(script_with_cursor)
 
     os.makedirs(speech_save_dir, exist_ok=True)
+    moss_gpu = gpu_list[0] if gpu_list else None
 
     for slide_idx in range(len(parsed_speech)):
         speech_with_cursor = parsed_speech[slide_idx]
@@ -98,13 +103,17 @@ def tts_per_slide(model_type, script_path, speech_save_dir, ref_audio, ref_text=
             else: subtitle = subtitle + "\n\n\n" + prompt
         speech_result_path = path.join(speech_save_dir, "{}.wav".format(str(slide_idx)))
 
+        if path.exists(speech_result_path):
+            print("[skip] tts slide {} ({})".format(slide_idx, path.basename(speech_result_path)))
+            continue
+
         if model_type == "f5":
             if ref_text is None: ref_text = transcribe_with_whisperx(ref_audio)
             inference_f5(subtitle, speech_result_path, ref_audio, ref_text)
         elif model_type == "moss":
             if not moss_python:
                 raise ValueError("moss model requires --moss_env")
-            inference_moss(subtitle, speech_result_path, ref_audio, moss_python)
+            inference_moss(subtitle, speech_result_path, ref_audio, moss_python, gpu_id=moss_gpu)
         else:
             raise ValueError(f"unknown tts model_type: {model_type}")
 
