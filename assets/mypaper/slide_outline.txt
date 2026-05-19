@@ -104,12 +104,11 @@ Slide 15 — Conclusion.
   - Force a \par + \vspace{0.6cm}, then a \begin{block}{Take-home} ... \end{block} highlighting the one-sentence message:
       "Reuse what foundation models already know — don't fight it."
 
-Slide 16 — Thanks + Q&A combined.
-  - Title: "Thank you"  (NOT "Thank you!" — drop the exclamation)
-  - \vspace{1.2cm}
-  - Centered, \Huge: "Questions?"  (no separate Thank-you body; the title slot does that)
-  - \vspace{1.0cm}
-  - Centered, \footnotesize, NOT in \texttt:
+Slide 16 — Thank-you slide.
+  - No frame title bar (use \begin{frame} with NO title argument).
+  - \vspace{1.6cm}, then centered \fontsize{60}{72}\selectfont \textbf{Thank you!}
+  - Do NOT include "Questions?" — the user explicitly does not want it.
+  - \vspace{1.4cm}, then centered \footnotesize tabular with code link + contact emails (no \texttt):
       \begin{tabular}{rl}
         Code:    & \href{https://github.com/shihaohou/FedPuReL}{github.com/shihaohou/FedPuReL} \\
         Contact: & \href{mailto:houshihao@stu.xmu.edu.cn}{houshihao@stu.xmu.edu.cn} \quad \href{mailto:luyang@xmu.edu.cn}{luyang@xmu.edu.cn} \\

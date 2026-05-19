@@ -61,12 +61,12 @@ NEW_FRAME_CONCLUSION = r"""\begin{frame}{Conclusion}
   \end{block}
 \end{frame}"""
 
-NEW_FRAME_THANKS = r"""\begin{frame}{Thank you}
-  \vspace{1.2cm}
+NEW_FRAME_THANKS = r"""\begin{frame}
+  \vspace{1.6cm}
   \begin{center}
-    {\Huge \alert{Questions?}}
+    {\fontsize{60}{72}\selectfont \textbf{Thank you!}}
 
-    \vspace{1.0cm}
+    \vspace{1.4cm}
     \footnotesize
     \begin{tabular}{rl}
       Code:    & \href{https://github.com/shihaohou/FedPuReL}{github.com/shihaohou/FedPuReL} \\[2pt]
