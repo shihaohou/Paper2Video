@@ -77,13 +77,20 @@ Slide 13 — Analysis 4: Branch Complementarity.
   - Bullet: Tail classes — personalized branch contribution grows, but global branch still supplies ~20-25%.
   - Include figure: fig/any3_contribution_comparison_ci.pdf at width=0.7\textwidth.
 
-Slide 14 — Conclusion.
+Slide 14 — Analysis 5: Gradient Alignment Dynamics.
+  - Title: "Analysis 5: Why Gradient Purification Works"
+  - Bullet: We visualize the angle between the task gradient g_task and the alignment gradient g_align during training.
+  - Bullet: Baselines — angle converges to ~90 degrees (orthogonal), reflecting the property that high-dimensional random vectors tend to be mutually orthogonal; balance erodes because task optimization ignores zero-shot alignment.
+  - Bullet: FedPuReL — angle stays obtuse (>90 degrees), revealing that the raw task gradient actively conflicts with balance preservation. Purification removes the conflicting component so every update preserves balanced knowledge while still adapting to the task.
+  - Include figure: fig/any1_gradient_angle_comparison_ci.pdf at width=0.7\textwidth.
+
+Slide 15 — Conclusion.
   - Title: "Conclusion"
   - Bullet: Foundation models bring an implicit balanced prior — preserve it.
   - Bullet: Gradient Purification + Residual Learning is a simple, prior-free recipe that beats prior-based methods.
   - Bullet: Generalizes across multiple imbalanced FL datasets and heterogeneity levels.
 
-Slide 15 — Thanks / Q&A.
+Slide 16 — Thanks / Q&A.
   - Title: "Thank you!"
   - One bullet: "Questions?"
   - Author email / GitHub placeholder may be left blank.
