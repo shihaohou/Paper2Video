@@ -9,6 +9,7 @@ Requirements:
    script | cursor description
    If no cursor is needed for a sentence, write "no".
 4. Aim for around 100 words of narration per slide on average — no hard upper limit. Adjust per slide based on content density: dense method / results / analysis slides may go well above 100 words to properly explain figures and findings; title, transitions, and the closing slide can be shorter (40-70 words). Use complete, well-formed sentences and stay technically substantive — do not pad with filler.
+5. NEVER read out long lists verbatim — dataset names, baseline method names, dataset variants, evaluation splits, hyperparameter sweeps, etc. Summarize them with one concise descriptor (e.g. "eight long-tailed image classification benchmarks", "a broad range of prompt-, LoRA-, and adapter-based federated PEFT baselines"). The slide visual already shows the list; the spoken script should give the high-level shape, not enumerate.
 5. Separate slides using "###". 
 
 Output Format (strict):
