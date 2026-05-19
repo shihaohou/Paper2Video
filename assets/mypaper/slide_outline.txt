@@ -1,0 +1,89 @@
+STRICT SLIDE OUTLINE — generate EXACTLY one \begin{frame}...\end{frame} per item below, in this exact order, with these exact titles. Do NOT add extra slides. Do NOT skip any. Use the listed figures from the paper's fig/ directory where specified.
+
+Slide 1 — Title slide.
+  - Title: "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
+  - Authors: Shihao Hou, Chikai Shang, Zhiheng Yang, Jiacheng Yang, Xinyi Shang, Junlong Gao, Yiqun Zhang, Yang Lu
+  - Affiliations: Xiamen University; University College London; Guangdong University of Technology
+
+Slide 2 — Motivation: The Problem.
+  - One bullet: PEFT fine-tuning of foundation models (e.g., CLIP) in federated long-tailed (Fed-LT) settings erodes their inherent balanced knowledge.
+  - One bullet: This bias propagates to personalized models through parameter / feature fusion.
+  - Include figure: fig/motivation1_1.pdf at width=0.6\textwidth.
+
+Slide 3 — Two Empirical Observations.
+  - Title: "What goes wrong during federated fine-tuning?"
+  - Observation 1: TKL divergence rises while balancedness beta(V) drops — strong negative correlation.
+  - Observation 2: Fine-tuning amplifies head-class accuracy but degrades tail-class accuracy.
+  - Include figure: fig/motivation2_combined_ci.pdf at width=0.85\textwidth.
+
+Slide 4 — FedPuReL Framework Overview.
+  - Title: "FedPuReL: Gradient Purification + Residual Learning"
+  - Two-component flow: (1) Global Balanced Training via gradient purification; (2) Personalized Residual Learning via dual-branch additive fusion.
+  - Include figure: fig/method2-cr.pdf at width=0.95\textwidth.
+
+Slide 5 — Method I: Gradient Purification.
+  - Title: "Gradient Purification"
+  - Alignment loss L_align = D_TKL(zero-shot || fine-tuned)
+  - Orthogonal projection rule: when <g_task, g_align> < 0, subtract the conflicting component; otherwise keep g_task.
+  - One short caption: "Updates that contradict balanced knowledge are projected away."
+
+Slide 6 — Method II: Residual Learning.
+  - Title: "Residual Learning in Logit Space"
+  - Global branch is frozen and provides balanced baseline logits l_G.
+  - Personalized branch learns client-specific parameters phi_k producing l_P^k.
+  - Final prediction: l_final^k = l_G + l_P^k (additive fusion in output space).
+  - One short caption: "Personalize as additive correction, not feature fusion — bias does not propagate."
+
+Slide 7 — Experimental Setup.
+  - Title: "Setup"
+  - Datasets bullet: ImageNet-LT, Places-LT, CIFAR-100-LT.
+  - Baselines bullet: PromptFL, FedOTP, PromptFolio, plus Fed-LT methods.
+  - Heterogeneity bullet: Dirichlet alpha for client non-IID, Imbalance Factor IF for class long-tail.
+  - Metrics bullet: Global Model (GM) and Personalized Model (PM); split by Many / Medium / Few shots.
+
+Slide 8 — Main Results: SOTA Comparison.
+  - Title: "Comparison with State-of-the-Art"
+  - One bullet on best-by-margin across GM and PM, especially Few-shot.
+  - One bullet noting FedPuReL surpasses methods that use explicit class priors.
+  - Include figure: fig/all_methods_overall.pdf at width=0.85\textwidth.
+
+Slide 9 — Ablation Study.
+  - Title: "Component Ablation"
+  - Group 1: Balancing strategies (Gradient Purification vs LS-KD vs WiSE-FT).
+  - Group 2: Personalization strategies (Residual Learning vs PromptFolio vs FedOTP).
+  - Bullet on synergy: combining both > either alone.
+
+Slide 10 — Analysis 1: Balance Preservation.
+  - Title: "Analysis 1: FedPuReL Maintains Class Balance"
+  - Bullet: Standard methods exhibit significant balancedness degradation across training rounds.
+  - Bullet: FedPuReL keeps beta(V) close to the zero-shot starting level for both global and personalized models.
+  - Include figure: fig/exp_2_balancedness_comparison.pdf at width=0.48\textwidth and fig/exp_2_balancedness_Personal_comparison.pdf at width=0.48\textwidth side by side.
+
+Slide 11 — Analysis 2: TKL Metric Validates the Picture.
+  - Title: "Analysis 2: TKL Isolates Bias from Confidence Shift"
+  - Bullet: Standard KL conflates confidence change with bias.
+  - Bullet: TKL is near zero on balanced data, large on long-tail — captures genuine class bias.
+  - Include figure: fig/motivation3_1_confidence_intervals.pdf at width=0.48\textwidth and fig/motivation3_2_confidence_intervals.pdf at width=0.48\textwidth side by side.
+
+Slide 12 — Analysis 3: Client Drift Reduction.
+  - Title: "Analysis 3: Lower Client Drift"
+  - Bullet: drift_k = || theta_k - theta_global ||_2 per round.
+  - Bullet: Gradient purification keeps all clients drifting toward the same zero-shot anchor, so cross-client drift is small and stable, accelerating convergence.
+  - Include figure: fig/any2_client_drift_comparison_ci.pdf at width=0.7\textwidth.
+
+Slide 13 — Analysis 4: Branch Complementarity.
+  - Title: "Analysis 4: Global and Personalized Branches Are Complementary"
+  - Bullet: Head classes — global branch dominates correct predictions.
+  - Bullet: Tail classes — personalized branch contribution grows, but global branch still supplies ~20-25%.
+  - Include figure: fig/any3_contribution_comparison_ci.pdf at width=0.7\textwidth.
+
+Slide 14 — Conclusion.
+  - Title: "Conclusion"
+  - Bullet: Foundation models bring an implicit balanced prior — preserve it.
+  - Bullet: Gradient Purification + Residual Learning is a simple, prior-free recipe that beats prior-based methods.
+  - Bullet: Generalizes across multiple imbalanced FL datasets and heterogeneity levels.
+
+Slide 15 — Thanks / Q&A.
+  - Title: "Thank you!"
+  - One bullet: "Questions?"
+  - Author email / GitHub placeholder may be left blank.

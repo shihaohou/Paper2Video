@@ -56,6 +56,9 @@ if __name__ == '__main__':
     parser.add_argument('--tts_model_type', type=str, default='f5', choices=['f5', 'moss'])
     parser.add_argument('--moss_env', type=str, default=None,
                         help='Path to MOSS-TTS venv python interpreter (used when --tts_model_type moss)')
+    parser.add_argument('--slide_outline_file', type=str, default=None,
+                        help='Path to a plain text file describing the exact slide-by-slide outline. '
+                             'When set, LLM is told to ignore the default chapter structure and follow this outline.')
     # slide+subtitle: 1; 
     # tts+cusor: 2; 
     # talking-head: 3: 
@@ -91,9 +94,14 @@ if __name__ == '__main__':
     start_time = time.time() # start time
     if "1" in stage or  "0" in stage:
         prompt_path = "./prompts/slide_beamer_prompt.txt"
-        if args.if_tree_search is True: 
-            usage_slide, beamer_path = latex_code_gen_upgrade(prompt_path=prompt_path, tex_dir=args.paper_latex_root, beamer_save_path=slide_latex_path, 
-                                                            model_config_ll=agent_config_t, model_config_vl=agent_config_v, beamer_temp_name=args.beamer_templete_prompt)
+        outline_override = None
+        if args.slide_outline_file:
+            with open(args.slide_outline_file, 'r', encoding='utf-8') as f_outline:
+                outline_override = f_outline.read()
+        if args.if_tree_search is True:
+            usage_slide, beamer_path = latex_code_gen_upgrade(prompt_path=prompt_path, tex_dir=args.paper_latex_root, beamer_save_path=slide_latex_path,
+                                                            model_config_ll=agent_config_t, model_config_vl=agent_config_v, beamer_temp_name=args.beamer_templete_prompt,
+                                                            outline_override=outline_override)
         else:
             paper_latex_path = path.join(args.paper_latex_root, "main.tex") 
             usage_slide = latex_code_gen(prompt_path=prompt_path, tex_dir=args.paper_latex_root, tex_path=paper_latex_path, beamer_save_path=slide_latex_path, model_config=agent_config_t)

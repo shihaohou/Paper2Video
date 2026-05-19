@@ -36,9 +36,10 @@ def extract_beamer_code(tex_str):
     match = re.search(r"(\\documentclass(?:\[[^\]]*\])?\{beamer\}.*?\\end\{document\})", tex_str, re.DOTALL)
     return match.group(1) if match else None
 
-def latex_code_gen_upgrade(prompt_path, tex_dir, beamer_save_path, 
+def latex_code_gen_upgrade(prompt_path, tex_dir, beamer_save_path,
                            model_config_ll, model_config_vl,
-                           beamer_temp_name=None, if_fix=True, if_tree_search=True):
+                           beamer_temp_name=None, if_fix=True, if_tree_search=True,
+                           outline_override=None):
     model = ModelFactory.create(
         model_platform=model_config_ll["model_platform"],
         model_type=model_config_ll["model_type"],
@@ -54,18 +55,22 @@ def latex_code_gen_upgrade(prompt_path, tex_dir, beamer_save_path,
     all_relative_paths = [str(file.relative_to(root_dir)) for file in root_dir.rglob("*") if file.is_file()] # figure path
 
     ## slide code generation
-    if beamer_temp_name is None:
-        main_inference_prompt = [
-            templete_prompt, "This is the latex code for paper:", tex_content,
-            "The file pathes in the project are: \n{}".format(str(all_relative_paths))
-        ]
-    else:
-        main_inference_prompt = [
-            templete_prompt, "This is the latex code for paper:", tex_content,
-            "The file pathes in the project are: \n{}".format(str(all_relative_paths)),
-            "Use Beamer Theme: {}".format(beamer_temp_name) 
-        ]
-        
+    main_inference_prompt = [
+        templete_prompt, "This is the latex code for paper:", tex_content,
+        "The file pathes in the project are: \n{}".format(str(all_relative_paths)),
+    ]
+    if beamer_temp_name is not None:
+        main_inference_prompt.append("Use Beamer Theme: {}".format(beamer_temp_name))
+    if outline_override:
+        main_inference_prompt.append(
+            "STRICT OUTLINE OVERRIDE — generate the slides following the "
+            "exact outline below. This OVERRIDES the 'Content structure' "
+            "list in the system instructions: ignore that list and use the "
+            "outline below as the authoritative slide-by-slide plan. All "
+            "other formatting, image, and LaTeX-correctness rules still "
+            "apply.\n\n" + outline_override
+        )
+
     main_inference_prompt = "\n".join(map(str, main_inference_prompt))
     user_msg = BaseMessage.make_user_message(role_name="User", content=main_inference_prompt)
     response = safe_step(agent, user_msg)
