@@ -1,9 +1,19 @@
 STRICT SLIDE OUTLINE — generate EXACTLY one \begin{frame}...\end{frame} per item below, in this exact order, with these exact titles. Do NOT add extra slides. Do NOT skip any. Use the listed figures from the paper's fig/ directory where specified.
 
 Slide 1 — Title slide.
-  - Title: "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
-  - Authors: Shihao Hou, Chikai Shang, Zhiheng Yang, Jiacheng Yang, Xinyi Shang, Junlong Gao, Yiqun Zhang, Yang Lu
-  - Affiliations: Xiamen University; University College London; Guangdong University of Technology
+  - Top row: logos.
+    * Left side: include fig/logo1.png at height=1.4cm (combined XMU + UCL + GDUT institutional logos).
+    * Right side: include fig/cvpr_logo.png at height=1.4cm (CVPR Denver 2026 conference logo).
+    * Use a two-column layout for the top row so the left logo strip is left-aligned and the CVPR logo is right-aligned.
+  - Title (centered, \Large or \LARGE): "Fine-Tuning Impairs the Balancedness of Foundation Models in Long-tailed Personalized Federated Learning"
+  - Authors with affiliation superscripts on one line, centered:
+      Shihao Hou\textsuperscript{1}, Chikai Shang\textsuperscript{1}, Zhiheng Yang\textsuperscript{1}, Jiacheng Yang\textsuperscript{3}, Xinyi Shang\textsuperscript{2}, Junlong Gao\textsuperscript{1}, Yiqun Zhang\textsuperscript{4}, Yang Lu\textsuperscript{1,*}
+  - Affiliations (footnotesize, centered):
+      \textsuperscript{1}Xiamen University \quad
+      \textsuperscript{2}Xiamen University (School of Informatics) \quad
+      \textsuperscript{3}University College London \quad
+      \textsuperscript{4}Guangdong University of Technology
+  - One small line at the bottom: "\textsuperscript{*}Corresponding author"
 
 Slide 2 — Motivation: The Problem.
   - One bullet: PEFT fine-tuning of foundation models (e.g., CLIP) in federated long-tailed (Fed-LT) settings erodes their inherent balanced knowledge.
